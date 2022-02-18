@@ -28,9 +28,6 @@ jobs:
           kind get kubeconfig --internal > ~/.kube/config
           kubectl get nodes
           
-      - name: Load image on the nodes of the cluster
-        run: |
-          kind load docker-image --name=kind litmuschaos/go-runner:ci
 
       - name: Deploy a sample application for chaos injection
         run: |
