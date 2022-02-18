@@ -31,10 +31,11 @@ jobs:
       - name: Print cluster information
         run: |
           set -x
+          env
           kubectl cluster-info --context kind-kind
           kubectl get pods -n kube-system
           kubectl get nodes
-          
+          ls ~/.kube/config
 #          kind get kubeconfig --internal > ~/.kube/config
 
           
