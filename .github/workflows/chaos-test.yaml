@@ -15,18 +15,22 @@ jobs:
 
       - name: Print cluster information
         run: |
+          set -x
           kubectl config view
           kubectl cluster-info
           kubectl get nodes
           kubectl get pods -n kube-system
           helm version
           kubectl version
+          cat $HOME/.kube/config
+          
 
-#       - name: Configuring and testing the Installation
-#         run: |
+      - name: Configuring and testing the Installation
+        run: |
+          set -x
+          kind get kubeconfig --internal >$HOME/.kube/config
+          kubectl get nodes
 #           kubectl cluster-info --context kind-kind
-#           kind get kubeconfig --internal >$HOME/.kube/config
-#           kubectl get nodes
 
       - name: Deploy a sample application for chaos injection
         run: |
