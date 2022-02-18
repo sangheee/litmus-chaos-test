@@ -9,6 +9,8 @@ on:
 jobs:
   Tests:
     runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: ~/.kube/config
     steps:
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
@@ -21,14 +23,18 @@ jobs:
       - name: Print cluster information
         run: |
           set -x
-          kubectl config view
-          kubectl cluster-info
-          kubectl get nodes
+          kubectl cluster-info --context kind-kind
           kubectl get pods -n kube-system
           kind get kubeconfig --internal > ~/.kube/config
+          kubectl get nodes
+          
+      - name: Load image on the nodes of the cluster
+        run: |
+          kind load docker-image --name=kind litmuschaos/go-runner:ci
 
       - name: Deploy a sample application for chaos injection
         run: |
+          set -x
           kubectl apply -f https://raw.githubusercontent.com/litmuschaos/chaos-ci-lib/master/app/nginx.yml
           kubectl wait --for=condition=Ready pods --all --namespace default --timeout=120s
 
