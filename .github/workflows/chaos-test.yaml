@@ -33,13 +33,15 @@ jobs:
           set -x
           kubectl cluster-info --context kind-kind
           kubectl get pods -n kube-system
-          kind get kubeconfig --internal > ~/.kube/config
           kubectl get nodes
           
+#          kind get kubeconfig --internal > ~/.kube/config
+
           
-      - name: Load image on the nodes of the cluster
-        run: |
-          kind load docker-image --name=kind litmuschaos/go-runner:ci       
+          
+#       - name: Load image on the nodes of the cluster
+#         run: |
+#           kind load docker-image --name=kind litmuschaos/go-runner:ci       
           
       - name: Deploy a sample application for chaos injection
         run: |
