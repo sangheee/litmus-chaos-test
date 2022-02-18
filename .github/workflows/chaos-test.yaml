@@ -10,8 +10,8 @@ jobs:
   Tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Creating kind cluster 
-        uses: helm/kind-action@v1.0.0-rc.1
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
 
       - name: Print cluster information
         run: |
