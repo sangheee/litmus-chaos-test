@@ -12,6 +12,14 @@ jobs:
     env:
       KUBECONFIG: ~/.kube/config
     steps:
+      - name: Generating Go binary and Building docker image
+        run: |
+          set -x
+          git clone https://github.com/litmuschaos/litmus-go.git
+          cd litmus-go
+          make build-amd64
+   
+          
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
 #        uses: engineerd/setup-kind@v0.5.0
@@ -28,7 +36,11 @@ jobs:
           kind get kubeconfig --internal > ~/.kube/config
           kubectl get nodes
           
-
+          
+      - name: Load image on the nodes of the cluster
+        run: |
+          kind load docker-image --name=kind litmuschaos/go-runner:ci       
+          
       - name: Deploy a sample application for chaos injection
         run: |
           set -x
