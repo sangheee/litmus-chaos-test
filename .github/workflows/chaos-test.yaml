@@ -9,8 +9,8 @@ on:
 jobs:
   Tests:
     runs-on: ubuntu-latest
-    env:
-      KUBECONFIG: ~/.kube/config
+#     env:
+#       KUBECONFIG: ~/.kube/config
     steps:
 #       - name: Generating Go binary and Building docker image
 #         run: |
@@ -35,7 +35,8 @@ jobs:
           kubectl cluster-info --context kind-kind
           kubectl get pods -n kube-system
           kubectl get nodes
-          ls ~/.kube/config
+          echo $HOME
+          ls $HOME/.kube/config
 #          kind get kubeconfig --internal > ~/.kube/config
 
           
