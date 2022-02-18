@@ -12,12 +12,12 @@ jobs:
     env:
       KUBECONFIG: ~/.kube/config
     steps:
-      - name: Generating Go binary and Building docker image
-        run: |
-          set -x
-          git clone https://github.com/litmuschaos/litmus-go.git
-          cd litmus-go
-          make build-amd64
+#       - name: Generating Go binary and Building docker image
+#         run: |
+#           set -x
+#           git clone https://github.com/litmuschaos/litmus-go.git
+#           cd litmus-go
+#           make build-amd64
    
           
       - name: Create kind cluster
