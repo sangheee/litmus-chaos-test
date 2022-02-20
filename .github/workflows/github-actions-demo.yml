@@ -9,16 +9,38 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Installing Prerequisites (KinD Cluster)
-        uses: engineerd/setup-kind@v0.5.0
-        with:
-            version: "v0.7.0"
-
-      - name: Configuring and testing the Installation
+      - name: Set up K3s cluster
         run: |
-          kubectl cluster-info --context kind-kind
-          kind get kubeconfig --internal >$HOME/.kube/config
+          curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.23.3+k3s1 sh -s - \
+            --write-kubeconfig-mode=644 \
+            "${k3s_disable_command:---disable}" metrics-server \
+            "${k3s_disable_command:---disable}" traefik \
+            --flannel-backend=none \
+            --docker
+        shell: bash
+      # this may be failed sometimes, and I want to exit the workflow directly if failed,
+      # but GitHub Actions doesnt' support early-exit yet, see https://github.com/actions/runner/issues/662.
+      # so, simply wait for a long time.
+      - name: Wait for coredns
+        run: |
+          kubectl rollout status --watch --timeout 600s deployment/coredns -n kube-system
+        shell: bash
+        env:
+          KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+          
+      - name: Export KUBECONFIG environment variable
+        run: |
+          echo 'KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> $GITHUB_ENV
+        shell: bash
+      - name: Print cluster information
+        run: |
+          kubectl config view
+          kubectl cluster-info
           kubectl get nodes
+          kubectl get pods -n kube-system
+          kubectl get sc
+          kubectl version
+
       - name: Deploy a sample application for chaos injection
         run: |
           kubectl apply -f https://raw.githubusercontent.com/litmuschaos/chaos-ci-lib/master/app/nginx.yml
