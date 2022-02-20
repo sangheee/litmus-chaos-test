@@ -52,10 +52,9 @@ jobs:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
           
       - name: Setup Litmus
-        uses: litmuschaos/github-chaos-actions@master
+        uses: sangheee/github-chaos-actions@master
         env:
           INSTALL_LITMUS: true
-#          KUBECONFIG: /home/runner/.kube/config
 
       - name: Running Litmus pod delete chaos experiment
         uses: litmuschaos/github-chaos-actions@master
