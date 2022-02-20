@@ -9,24 +9,19 @@ on:
 jobs:
   Tests:
     runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: /home/runner/.kube/config 
 #     env:
 #       KUBECONFIG: ~/.kube/config
     steps:
-#       - name: Generating Go binary and Building docker image
-#         run: |
-#           set -x
-#           git clone https://github.com/litmuschaos/litmus-go.git
-#           cd litmus-go
-#           make build-amd64
-   
-          
-      - name: Create kind cluster
-        uses: helm/kind-action@v1.2.0
-#        uses: engineerd/setup-kind@v0.5.0
-        with:
-          cluster_name: kind
-#          version: 'v0.10.0'
-#          image: 'kindest/node:v1.20.0'
+      #Install and configure a kind cluster
+      - name: Installing KinD cluster for the test
+        run: kind create cluster
+
+      - name: Configuring and testing the Installation
+        run: |
+          kubectl wait node --all --for condition=ready --timeout=120s
+          kubectl get nodes 
 
       - name: Print cluster information
         run: |
