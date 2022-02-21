@@ -27,15 +27,16 @@ jobs:
           set -x
           kubectl cluster-info --context kind-kind
           kubectl get pods -n kube-system
-          kubectl get nodes
-          echo $HOME
-          ls $HOME/.kube/config
           
-      - name: Deploy a sample application for chaos injection
-        run: |
-          set -x
-          kubectl apply -f https://raw.githubusercontent.com/litmuschaos/chaos-ci-lib/master/app/nginx.yml
-          kubectl wait --for=condition=Ready pods --all --namespace default --timeout=120s
+#          kubectl get nodes
+#          echo $HOME
+#          ls $HOME/.kube/config
+          
+#       - name: Deploy a sample application for chaos injection
+#         run: |
+#           set -x
+#           kubectl apply -f https://raw.githubusercontent.com/litmuschaos/chaos-ci-lib/master/app/nginx.yml
+#           kubectl wait --for=condition=Ready pods --all --namespace default --timeout=120s
 
 #      - name: Setting up kubeconfig ENV for Github Chaos Action
 #        run: echo ::set-env name=KUBE_CONFIG_DATA::$(base64 -w 0 $HOME/.kube/config)
@@ -44,11 +45,53 @@ jobs:
           
       - name: Setup Litmus
         run: |
-          mkdir -p $HOME/go/src/github.com/litmuschaos
-          cd $HOME/go/src/github.com/litmuschaos
-          git clone https://github.com/litmuschaos/chaos-ci-lib.git
-          cd chaos-ci-lib
-          go test litmus/install-litmus_test.go -v -count=1
+          set -x
+          kubectl apply -f https://litmuschaos.github.io/litmus/litmus-operator-latest.yaml -n litmus
+          kubectl wait --for=condition=Ready pods -n litmus --timeout=120s
+          
+      - name: Setup ArgoWorkflow
+        run: |
+          set -x
+          kubectl create ns argo
+          kubectl apply -f https://raw.githubusercontent.com/argoproj/argo/stable/manifests/install.yaml -n argo
+          kubectl wait --for=condition=Available deployment workflow-controller -n argo --timeout=120s
+          
+      - name: Create the Argo Access ServiceAccount          
+        run: |
+          set -x
+          kubectl apply -f https://raw.githubusercontent.com/litmuschaos/chaos-workflows/master/Argo/argo-access.yaml
+          
+      - name: Configure Argo to work in kind
+        run: | 
+          # kind’s cluster does not use Docker, which is the default container runtime used by Argo’s Workflow controller. 
+          # Instead Kind uses containerd. 
+          # Fortunately, Argo’s Workflow Controller may be configured. 
+          # Argo documents the configuration pretty well in their workflow-controller-configmap docs.
+          #
+          # https://argoproj.github.io/argo-workflows/workflow-executors/
+          # https://github.com/argoproj/argo-workflows/blob/v2.11.8/docs/workflow-controller-configmap.yaml#L95
+          #
+          set -x
+          kubectl patch configmap workflow-controller-configmap -n argo --patch '{"data": {"containerRuntimeExecutor": "pns"}}' --type merge
+          
+      - name: Install Argo CLI
+        run: |           
+          set -x
+          curl https://github.com/argoproj/argo-workflows/releases/download/v3.2.8/argo-linux-amd64.gz --location --output ~/argo.gz
+          gunzip ~/argo.gz
+          chmod +x argo
+          ~/argo version
+          
+      - name: Run Argo Workflow
+        run: |           
+          set -x
+          ~/argo submit https://raw.githubusercontent.com/litmuschaos/chaos-workflows/master/Argo/argowf-chaos-admin.yaml -n litmus --watch
+          
+#          mkdir -p $HOME/go/src/github.com/litmuscha#os
+#          cd $HOME/go/src/github.com/litmuschaos
+#          git clone https://github.com/litmuschaos/chaos-ci-lib.git
+#          cd chaos-ci-lib
+#          go test litmus/install-litmus_test.go -v -count=1
 #        uses: litmuschaos/github-chaos-actions@master
 #        env:
 #          INSTALL_LITMUS: true
