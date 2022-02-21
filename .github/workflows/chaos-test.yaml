@@ -79,7 +79,7 @@ jobs:
           set -x
           curl https://github.com/argoproj/argo-workflows/releases/download/v3.2.8/argo-linux-amd64.gz --location --output ~/argo.gz
           gunzip ~/argo.gz
-          chmod +x argo
+          chmod +x ~/argo
           ~/argo version
           
       - name: Run Argo Workflow
