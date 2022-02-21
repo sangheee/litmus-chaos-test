@@ -59,7 +59,7 @@ jobs:
       - name: Create the Argo Access ServiceAccount          
         run: |
           set -x
-          kubectl apply -f https://raw.githubusercontent.com/litmuschaos/chaos-workflows/master/Argo/argo-access.yaml
+          kubectl apply -f https://raw.githubusercontent.com/litmuschaos/chaos-workflows/master/Argo/argo-access.yaml -n litmus
           
       - name: Configure Argo to work in kind
         run: | 
