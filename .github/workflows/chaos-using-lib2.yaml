@@ -46,6 +46,9 @@ jobs:
           git clone https://github.com/litmuschaos/chaos-ci-lib.git
           cd chaos-ci-lib
           go test litmus/install-litmus_test.go -v -count=1     
+        env:          
+           APP_NS: litmus
+
           
           
 #       - name: Running Litmus pod delete chaos experiment
@@ -58,17 +61,7 @@ jobs:
 #           JOB_CLEANUP_POLICY: delete
 #           TEST_TIMEOUT: 600          
 
-#       - name: Running node-cpu-hog chaos experiment
-#         run: |
-#           cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
-#           go test experiments/pod-cpu-hog_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
-#         env:
-#           EXPERIMENT_NAME: node-cpu-hog
-#           EXPERIMENT_IMAGE: litmuschaos/go-runner
-#           EXPERIMENT_IMAGE_TAG: ci
-#           ENGINE_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog.yaml
-#           JOB_CLEANUP_POLICY: delete
-#           TEST_TIMEOUT: 600          
+
           
       - name: Running node-cpu-hog chaos experiment without probe
         run: |
@@ -78,11 +71,25 @@ jobs:
           EXPERIMENT_NAME: node-cpu-hog
           EXPERIMENT_IMAGE: litmuschaos/go-runner
           EXPERIMENT_IMAGE_TAG: ci
-          ENGINE_PATH: https://raw.githubusercontent.com/litmuschaos/litmus/master/demo/sample-applications/sock-shop/chaos/catalogue/catalogue-cpu-hog.yaml
+          ENGINE_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog/pod-cpu-hog-without-probe.yaml
           JOB_CLEANUP_POLICY: delete
-          TEST_TIMEOUT: 600                    
+          TEST_TIMEOUT: 600
+          RBAC_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog/rbac.yaml
+          CHAOS_NAMESPACE: litmus
           
-
+      - name: Running node-cpu-hog chaos experiment
+        run: |
+          cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
+          go test experiments/pod-cpu-hog_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
+        env:
+          EXPERIMENT_NAME: node-cpu-hog
+          EXPERIMENT_IMAGE: litmuschaos/go-runner
+          EXPERIMENT_IMAGE_TAG: ci
+          ENGINE_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog/pod-cpu-hog.yaml
+          JOB_CLEANUP_POLICY: delete
+          TEST_TIMEOUT: 600     
+          RBAC_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog/rbac.yaml
+          CHAOS_NAMESPACE: litmus
 
 #       - name: Uninstall Litmus
 #         uses: litmuschaos/github-chaos-actions@master
