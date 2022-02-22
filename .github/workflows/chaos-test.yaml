@@ -70,5 +70,5 @@ jobs:
       - name: Run Argo Workflow
         run: |           
           set -x
-          ~/argo submit https://raw.githubusercontent.com/litmuschaos/chaos-charts/master/workflows/sock-shop/workflow.yaml -n litmus --log
+          ~/argo submit https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/workflows/sock-shop.yaml --log
           
