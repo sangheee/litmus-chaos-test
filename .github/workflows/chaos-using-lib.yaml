@@ -38,7 +38,7 @@ jobs:
       - name: Setup Litmus
         run: |
           set -x
-          mkdir -p $HOME/go/src/github.com/litmuscha#os
+          mkdir -p $HOME/go/src/github.com/litmuschaos
           cd $HOME/go/src/github.com/litmuschaos
           git clone https://github.com/litmuschaos/chaos-ci-lib.git
           cd chaos-ci-lib
