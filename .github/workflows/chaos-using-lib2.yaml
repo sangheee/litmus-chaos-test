@@ -35,7 +35,7 @@ jobs:
           cd litmus/demo/sample-applications/sock-shop
           kubectl create ns sock-shop
           kubectl apply -f deploy/sock-shop/
-          kubectl wait --for=condition=Ready pods --all --namespace sock-shop --timeout=120s
+          kubectl wait --for=condition=Ready pods --all --namespace sock-shop --timeout=400s
           
           
       - name: Setup Litmus
