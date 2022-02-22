@@ -1,4 +1,4 @@
-name: Chaos Test using chaos lib, not argo workflows
+name: Sock-Shop Chaos Test using lib
 on:
   workflow_dispatch:
     inputs:
