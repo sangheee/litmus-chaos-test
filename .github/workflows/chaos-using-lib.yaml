@@ -38,11 +38,11 @@ jobs:
       - name: Setup Litmus
         run: |
           set -x
-         mkdir -p $HOME/go/src/github.com/litmuscha#os
-         cd $HOME/go/src/github.com/litmuschaos
-         git clone https://github.com/litmuschaos/chaos-ci-lib.git
-         cd chaos-ci-lib
-         go test litmus/install-litmus_test.go -v -count=1     
+          mkdir -p $HOME/go/src/github.com/litmuscha#os
+          cd $HOME/go/src/github.com/litmuschaos
+          git clone https://github.com/litmuschaos/chaos-ci-lib.git
+          cd chaos-ci-lib
+          go test litmus/install-litmus_test.go -v -count=1     
           
 
       - name: Running Litmus pod delete chaos experiment
