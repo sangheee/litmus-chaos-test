@@ -1,0 +1,31 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: pod-cpu-hog-chaos
+  namespace: litmus
+spec:
+  appinfo:
+    appns: sock-shop
+    applabel: name=carts
+    appkind: deployment
+  jobCleanUpPolicy: retain
+  engineState: active
+  chaosServiceAccount: litmus-admin
+  experiments:
+    - name: pod-cpu-hog
+      spec:
+        components:
+          env:
+            - name: CPU_CORES
+              value: '1'
+            - name: TOTAL_CHAOS_DURATION
+              value: '60'
+            ## Percentage of total pods to target
+            - name: PODS_AFFECTED_PERC
+              value: ''
+            - name: CHAOS_KILL_COMMAND
+              value: >-
+                kill -9 $(ps afx | grep "[md5sum] /dev/zero" | awk '{print$1}' |
+                tr '
+
+                ' ' ')
