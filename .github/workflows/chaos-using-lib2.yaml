@@ -68,7 +68,7 @@ jobs:
           cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
           go test experiments/pod-cpu-hog_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
         env:
-          EXPERIMENT_NAME: node-cpu-hog
+          EXPERIMENT_NAME: pod-cpu-hog
           EXPERIMENT_IMAGE: litmuschaos/go-runner
           EXPERIMENT_IMAGE_TAG: ci
           ENGINE_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog/pod-cpu-hog-without-probe.yaml
@@ -82,7 +82,7 @@ jobs:
           cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
           go test experiments/pod-cpu-hog_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
         env:
-          EXPERIMENT_NAME: node-cpu-hog
+          EXPERIMENT_NAME: pod-cpu-hog
           EXPERIMENT_IMAGE: litmuschaos/go-runner
           EXPERIMENT_IMAGE_TAG: ci
           ENGINE_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog/pod-cpu-hog.yaml
