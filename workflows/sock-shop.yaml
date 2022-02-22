@@ -4,7 +4,7 @@ metadata:
   generateName: sock-shop-
   namespace: litmus
   labels:
-    subject: "litmis_sock-shop"
+    subject: "litmus_sock-shop"
 spec:
   entrypoint: argowf-chaos
   serviceAccountName: argo-chaos
