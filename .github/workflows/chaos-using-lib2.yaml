@@ -48,16 +48,27 @@ jobs:
           go test litmus/install-litmus_test.go -v -count=1     
           
           
-      - name: Running Litmus pod delete chaos experiment
+#       - name: Running Litmus pod delete chaos experiment
+#         run: |
+#           cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
+#           go test experiments/pod-delete_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
+#         env:
+#           EXPERIMENT_IMAGE: litmuschaos/go-runner
+#           EXPERIMENT_IMAGE_TAG: ci
+#           JOB_CLEANUP_POLICY: delete
+#           TEST_TIMEOUT: 600          
+
+      - name: Running node-cpu-hog chaos experiment
         run: |
           cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
-          go test experiments/pod-delete_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
+          go test experiments/pod-cpu-hog_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
         env:
+          EXPERIMENT_NAME: node-cpu-hog
           EXPERIMENT_IMAGE: litmuschaos/go-runner
           EXPERIMENT_IMAGE_TAG: ci
+          ENGINE_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog.yaml
           JOB_CLEANUP_POLICY: delete
-          TEST_TIMEOUT: 600          
-
+          
       - name: Running node-cpu-hog chaos experiment without probe
         run: |
           cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
@@ -69,16 +80,7 @@ jobs:
           ENGINE_PATH: https://raw.githubusercontent.com/litmuschaos/litmus/master/demo/sample-applications/sock-shop/chaos/catalogue/catalogue-cpu-hog.yaml
           JOB_CLEANUP_POLICY: delete
           
-      - name: Running node-cpu-hog chaos experiment
-        run: |
-          cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
-          go test experiments/pod-cpu-hog_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
-        env:
-          EXPERIMENT_NAME: node-cpu-hog
-          EXPERIMENT_IMAGE: litmuschaos/go-runner
-          EXPERIMENT_IMAGE_TAG: ci
-          ENGINE_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog.yaml
-          JOB_CLEANUP_POLICY: delete
+
 
 #       - name: Uninstall Litmus
 #         uses: litmuschaos/github-chaos-actions@master
