@@ -61,7 +61,7 @@ jobs:
       - name: Running node-cpu-hog chaos experiment without probe
         run: |
           cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
-          go test experiments/pod-delete_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
+          go test experiments/pod-cpu-hog_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
         env:
           EXPERIMENT_NAME: node-cpu-hog
           EXPERIMENT_IMAGE: litmuschaos/go-runner
@@ -72,7 +72,7 @@ jobs:
       - name: Running node-cpu-hog chaos experiment
         run: |
           cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
-          go test experiments/pod-delete_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
+          go test experiments/pod-cpu-hog_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
         env:
           EXPERIMENT_NAME: node-cpu-hog
           EXPERIMENT_IMAGE: litmuschaos/go-runner
