@@ -47,7 +47,7 @@ jobs:
 
       - name: Running Litmus pod delete chaos experiment
         run: |
-          $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
+          cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
           go test experiments/pod-delete_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
         env:
           EXPERIMENT_IMAGE: litmuschaos/go-runner
