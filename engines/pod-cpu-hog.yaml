@@ -2,10 +2,7 @@ apiVersion: litmuschaos.io/v1alpha1
 kind: ChaosEngine
 metadata:
   name: pod-cpu-hog-chaos
-  namespace:
-    '[object Object]': null
-  labels:
-    context: '{{workflow.parameters.appNamespace}}_carts'
+  namespace: litmus
 spec:
   appinfo:
     appns: sock-shop
