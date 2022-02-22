@@ -68,6 +68,7 @@ jobs:
           EXPERIMENT_IMAGE_TAG: ci
           ENGINE_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog.yaml
           JOB_CLEANUP_POLICY: delete
+          TEST_TIMEOUT: 600          
           
       - name: Running node-cpu-hog chaos experiment without probe
         run: |
@@ -79,6 +80,7 @@ jobs:
           EXPERIMENT_IMAGE_TAG: ci
           ENGINE_PATH: https://raw.githubusercontent.com/litmuschaos/litmus/master/demo/sample-applications/sock-shop/chaos/catalogue/catalogue-cpu-hog.yaml
           JOB_CLEANUP_POLICY: delete
+          TEST_TIMEOUT: 600                    
           
 
 
