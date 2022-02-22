@@ -1,0 +1,79 @@
+name: Chaos Test using chaos lib, not argo workflows
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'debug'
+jobs:
+  Tests:
+    runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: /home/runner/.kube/config 
+
+    steps:
+      #Install and configure a kind cluster
+      - name: Installing KinD cluster for the test
+        run: kind create cluster
+
+      - name: Configuring and testing the Installation
+        run: |
+          kubectl wait node --all --for condition=ready --timeout=120s
+          kubectl get nodes 
+
+      - name: Print cluster information
+        run: |
+          set -x
+          kubectl cluster-info --context kind-kind
+          kubectl get pods -n kube-system
+          
+      - name: Deploy a sample application for chaos injection
+        run: |
+          set -x
+          git clone https://github.com/litmuschaos/litmus.git
+          cd litmus/demo/sample-applications/sock-shop
+          kubectl create ns sock-shop
+          kubectl apply -f deploy/sock-shop/
+          kubectl wait --for=condition=Ready pods --all --namespace sock-shop --timeout=120s
+          
+          
+      - name: Setup Litmus
+        run: |
+          set -x
+          mkdir -p $HOME/go/src/github.com/litmuschaos
+          cd $HOME/go/src/github.com/litmuschaos
+          git clone https://github.com/litmuschaos/chaos-ci-lib.git
+          cd chaos-ci-lib
+          go test litmus/install-litmus_test.go -v -count=1     
+          
+          
+      - name: Running Litmus pod delete chaos experiment
+        run: |
+          cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
+          go test experiments/pod-delete_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
+        env:
+          EXPERIMENT_IMAGE: litmuschaos/go-runner
+          EXPERIMENT_IMAGE_TAG: ci
+          JOB_CLEANUP_POLICY: delete
+          TEST_TIMEOUT: 600          
+
+      - name: Running node-cpu-hog chaos experiment
+        run: |
+          cd $HOME/go/src/github.com/litmuschaos/chaos-ci-lib
+          go test experiments/pod-delete_test.go -v -count=1 -timeout=${TEST_TIMEOUT}s
+        env:
+          EXPERIMENT_NAME: node-cpu-hog
+          EXPERIMENT_IMAGE: litmuschaos/go-runner
+          EXPERIMENT_IMAGE_TAG: ci
+          ENGINE_PATH: https://raw.githubusercontent.com/sangheee/litmus-chaos-test/main/engines/pod-cpu-hog.yaml
+          JOB_CLEANUP_POLICY: delete
+
+#       - name: Uninstall Litmus
+#         uses: litmuschaos/github-chaos-actions@master
+#         env:
+#           LITMUS_CLEANUP: true
+
+#       - name: Deleting KinD cluster
+#         if: ${{ always() }}
+#         run: kind delete cluster
