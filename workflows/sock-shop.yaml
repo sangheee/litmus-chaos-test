@@ -18,6 +18,8 @@ spec:
   templates:
     - name: argowf-chaos
       steps:
+        - - name: install-application
+            template: install-application
         - - name: deploy-sa
             template: deploy-sa
         - - name: install-experiment
@@ -26,6 +28,10 @@ spec:
             template: run-chaos
         - - name: revert-chaos
             template: revert-chaos
+    - name: install-application
+      container:
+        image: litmuschaos/litmus-app-deployer:latest
+        args: ["-namespace=sock-shop","-typeName=resilient","-operation=apply","-timeout=400", "-app=sock-shop","-scope=cluster"] #for weak provide type flagName as resilient(-typeName=weak)
 
     - name: deploy-sa
       inputs:
