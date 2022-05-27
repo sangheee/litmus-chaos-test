@@ -28,4 +28,4 @@ jobs:
           
       - name: Setup Chaos Mesh
         run: |
-          curl -sSL https://mirrors.chaos-mesh.org/v2.0.1/install.sh | bash
+          curl -sSL https://raw.githubusercontent.com/chaos-mesh/chaos-mesh/master/install.sh | bash
