@@ -1,0 +1,31 @@
+name: Chaos Mesh test
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'debug'
+jobs:
+  Tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Installing KinD cluster for the test
+        run: kind create cluster
+
+      - name: Configuring and testing the Installation
+        run: |
+          kubectl wait node --all --for condition=ready --timeout=120s
+          kubectl get nodes 
+
+      - name: Print cluster information
+        run: |
+          set -x
+          kubectl cluster-info --context kind-kind
+          kubectl get pods -n kube-system
+          
+          
+      - name: Setup Chaos Mesh
+        run: |
+          curl -sSL https://mirrors.chaos-mesh.org/v2.1.5/install.sh | bash
