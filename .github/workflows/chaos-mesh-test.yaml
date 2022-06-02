@@ -1,11 +1,7 @@
 name: Chaos Mesh test
 on:
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'debug'
+
 jobs:
   Tests:
     runs-on: ubuntu-latest
