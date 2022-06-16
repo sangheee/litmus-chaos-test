@@ -11,10 +11,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:  
+      - run: echo 'GINKGO_PARAMETERS="--ginkgo.v"' >> "$GITHUB_ENV"
       - name: Set ginkgo parameters
-        run: |
-            echo 'GINKGO_PARAMETERS="--ginkgo.v"' >> "$GITHUB_ENV"
-            
+        run: |            
             if [[ "pull_request" == "push" ]] || \
                [[ "pull_request" == "pull_request" ]] || \
                [[ "" == "feature" ]]; then
