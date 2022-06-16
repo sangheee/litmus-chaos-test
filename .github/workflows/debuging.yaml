@@ -11,14 +11,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:  
-      - name: Install Ginkgo
+      - name: Set ginkgo parameters
         run: |
+            GINKGO_PARAMETERS="--ginkgo.v" >> "$GITHUB_ENV
+            
             if [[ "pull_request" == "push" ]] || \
                [[ "pull_request" == "pull_request" ]] || \
                [[ "" == "feature" ]]; then
-              echo 'GINKGO_PARAMETERS=--ginkgo.skip="\[Chaos\]"' >> "$GITHUB_ENV"
+              echo 'GINKGO_PARAMETERS=${GINKGO_PARAMETERS} --ginkgo.skip="\[Chaos\]"' >> "$GITHUB_ENV"
             elif [[ "" == "chaos" ]]; then
-              echo 'GINKGO_PARAMETERS=--ginkgo.focus="\[Chaos\]"' >> "$GITHUB_ENV"
+              echo 'GINKGO_PARAMETERS=${GINKGO_PARAMETERS} --ginkgo.focus="\[Chaos\]"' >> "$GITHUB_ENV"
             fi
       - name: test
         run: |
