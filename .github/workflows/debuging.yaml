@@ -13,7 +13,7 @@ jobs:
     steps:  
       - name: Set ginkgo parameters
         run: |
-            echo 'GINKGO_PARAMETERS="--ginkgo.v"' >> "$GITHUB_ENV
+            echo 'GINKGO_PARAMETERS="--ginkgo.v"' >> "$GITHUB_ENV"
             
             if [[ "pull_request" == "push" ]] || \
                [[ "pull_request" == "pull_request" ]] || \
